@@ -3,8 +3,8 @@
 from setuptools import setup
 
 setup(
-    name="autoupgrade-ng",
-    version="0.3.0",
+    name="autoupgrade-prima",
+    version="0.3.2",
     author="Walter Purcaro",
     author_email="vuolter@gmail.com",
     description="Automatic upgrade of PyPI packages",
@@ -12,9 +12,9 @@ setup(
     keywords=['autoupgrade', 'pip-upgrade', 'pip'],
     packages=['autoupgrade'],
     include_package_data=True,
-    url="https://github.com/vuolter/autoupgrade",
-    download_url="https://github.com/vuolter/autoupgrade/releases",
-    install_requires=['pip'],
+    url="https://github.com/primait/autoupgrade",
+    download_url="https://github.com/primait/autoupgrade/releases",
+    install_requires=['pip', 'requests'],
     obsoletes=['autoupgrade'],
     license='MIT License',
     zip_safe=True,
