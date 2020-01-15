@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pathlib
 import re
 import sys
 
@@ -82,6 +83,9 @@ class Package(object):
         if prerelease:
             pip_args.append("--pre")
 
+        if self._is_user_installed():
+            pip_args.append('--user')
+
         proxy = os.environ.get('http_proxy')
         if proxy:
             pip_args.extend(['--proxy', proxy])
@@ -117,6 +121,17 @@ class Package(object):
         current = self._get_current()
         highest = self._get_highest_version()
         return highest > current
+
+    def _is_user_installed(self):
+        """
+        Return True if the package has been installed as an user package
+        (pip's `--user` option) or False otherwise.
+        """
+        # Currently we just check if the module location is inside the
+        # user home, which is kind of a shacky check.
+        # Better solutions are welcome
+        installation_path = pkg_resources.get_distribution(self.pkg).location
+        return installation_path.startswith(str(pathlib.Path.home()))
 
     def _get_current(self):
         try:
