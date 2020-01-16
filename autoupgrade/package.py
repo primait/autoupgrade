@@ -3,6 +3,7 @@
 import os
 import pathlib
 import re
+import site
 import sys
 
 from pip._internal import main as pip
@@ -127,11 +128,14 @@ class Package(object):
         Return True if the package has been installed as an user package
         (pip's `--user` option) or False otherwise.
         """
-        # Currently we just check if the module location is inside the
-        # user home, which is kind of a shacky check.
-        # Better solutions are welcome
         installation_path = pkg_resources.get_distribution(self.pkg).location
-        return installation_path.startswith(str(pathlib.Path.home()))
+        try:
+            user_site_directory = site.getusersitepackages()
+            return installation_path.startswith(user_site_directory)
+        except AttributeError:
+            # Some versions of virtualenv ship with their own version of the
+            # site module without the getusersitepacakges function.
+            return False
 
     def _get_current(self):
         try:
