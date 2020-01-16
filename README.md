@@ -1,21 +1,5 @@
 AutoUpgrade
 ===========
-[![PyPI](https://img.shields.io/pypi/v/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![GitHub issues](https://img.shields.io/github/issues/vuolter/autoupgrade.svg)]
-(https://github.com/vuolter/autoupgrade/issues)
-[![PyPI](https://img.shields.io/pypi/dm/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![PyPI](https://img.shields.io/pypi/l/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![PyPI](https://img.shields.io/pypi/format/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![PyPI](https://img.shields.io/pypi/pyversions/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![PyPI](https://img.shields.io/pypi/status/autoupgrade-ng.svg)]
-(https://pypi.python.org/pypi/autoupgrade-ng)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/WalterPurcaro.svg?style=social)]
-(https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 
 Automatic upgrade of PyPI packages.
 
@@ -53,7 +37,7 @@ Old methods are still supported; you can accomplish the same task calling:
 Installation
 ------------
 
-    pip install autoupgrade-ng
+    pip install autoupgrade-prima
 
 All the modules will be installed under the _autoupgrade_ package, so **make
 sure you have already removed the old [AutoUpgrade package]
