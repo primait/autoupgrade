@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pathlib
 import re
 import site
 import sys
