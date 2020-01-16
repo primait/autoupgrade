@@ -2,6 +2,7 @@
 
 import os
 import re
+import site
 import sys
 
 from pip._internal import main as pip
@@ -82,6 +83,9 @@ class Package(object):
         if prerelease:
             pip_args.append("--pre")
 
+        if self._is_user_installed():
+            pip_args.append('--user')
+
         proxy = os.environ.get('http_proxy')
         if proxy:
             pip_args.extend(['--proxy', proxy])
@@ -117,6 +121,20 @@ class Package(object):
         current = self._get_current()
         highest = self._get_highest_version()
         return highest > current
+
+    def _is_user_installed(self):
+        """
+        Return True if the package has been installed as an user package
+        (pip's `--user` option) or False otherwise.
+        """
+        installation_path = pkg_resources.get_distribution(self.pkg).location
+        try:
+            user_site_directory = site.getusersitepackages()
+            return installation_path.startswith(user_site_directory)
+        except AttributeError:
+            # Some versions of virtualenv ship with their own version of the
+            # site module without the getusersitepacakges function.
+            return False
 
     def _get_current(self):
         try:
