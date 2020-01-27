@@ -4,15 +4,13 @@ import os
 import re
 import site
 import sys
-
-from pip._internal import main as pip
+import subprocess
 import pkg_resources
-
-from .exceptions import NoVersionsError, PIPError, PkgNotFoundError
-from .utils import ver_to_tuple
-
 import requests
 
+from .exceptions import NoVersionsError, PkgNotFoundError
+from subprocess import CalledProcessError
+from .utils import ver_to_tuple
 
 class Package(object):
     """
@@ -40,7 +38,7 @@ class Package(object):
     def upgrade_if_needed(self, *args, **kwargs):
         return self.smartupgrade(*args, **kwargs)
 
-    def smartupgrade(self, restart=True, dependencies=False, prerelease=False):
+    def smartupgrade(self, restart=True, dependencies=True, prerelease=False):
         """
         Upgrade the package if there is a later version available.
         Args:
@@ -58,7 +56,7 @@ class Package(object):
         if restart:
             self.restart()
 
-    def upgrade(self, dependencies=False, prerelease=False, force=False):
+    def upgrade(self, dependencies=True, prerelease=False, force=False):
         """
         Upgrade the package unconditionaly
         Args:
@@ -67,7 +65,7 @@ class Package(object):
             force: reinstall all packages even if they are already up-to-date
         Returns True if pip was sucessful
         """
-        pip_args = ['install', self.pkg]
+        pip_args = ['pip', 'install', self.pkg]
 
         found = self._get_current() != (-1)
         if found:
@@ -94,15 +92,10 @@ class Package(object):
             pip_args.extend(['-i', self.index])
 
         try:
-            ecode = pip.main(args=pip_args)
-        except TypeError:
-            # pip changed in 0.6.0 from initial_args to args, this is for backwards compatibility
-            # can be removed when pip 0.5 is no longer in use at all (approx.
-            # year 2025)
-            ecode = pip.main(initial_args=pip_args)
-
-        if ecode != 0:
-            raise PIPError(ecode)
+            subprocess.run(pip_args, check=True)
+        except (CalledProcessError) as e:
+            print("Errore eseguendo il comando: {}".format(e))
+            sys.exit(-1)
 
     def restart(self):
         """
