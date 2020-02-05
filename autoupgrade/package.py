@@ -12,6 +12,7 @@ from .exceptions import NoVersionsError, PkgNotFoundError
 from subprocess import CalledProcessError
 from .utils import ver_to_tuple
 
+
 class Package(object):
     """
     AutoUpgrade class, holds one package.
@@ -65,7 +66,7 @@ class Package(object):
             force: reinstall all packages even if they are already up-to-date
         Returns True if pip was sucessful
         """
-        pip_args = ['pip', 'install', self.pkg]
+        pip_args = ['pip3', 'install', self.pkg]
 
         found = self._get_current() != (-1)
         if found:
