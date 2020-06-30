@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="autoupgrade-prima",
-    version="0.6.0",
+    version="0.6.1",
     author="Walter Purcaro",
     author_email="vuolter@gmail.com",
     description="Automatic upgrade of PyPI packages",
