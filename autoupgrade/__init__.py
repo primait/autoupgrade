@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import site
 import sys
 import subprocess
-import requests
 import pkg_resources
-
 
 from subprocess import CalledProcessError
 
@@ -27,7 +24,7 @@ class Package(object):
         self.pkg = pkg
         self.verbose = verbose
 
-    def upgrade(self, dependencies=True, prerelease=False, force=False):
+    def upgrade(self, dependencies=True, prerelease=False, force=False, restart=True):
         """
         Upgrade the package unconditionaly
         Args:
@@ -37,6 +34,9 @@ class Package(object):
         Returns True if pip was sucessful
         """
         pip_args = ["pip3", "install", self.pkg, "--upgrade"]
+
+        if not self.verbose:
+            pip_args.append("--quiet")
 
         if force:
             pip_args.append("--force-reinstall")
@@ -60,13 +60,15 @@ class Package(object):
             print(f"Errore eseguendo il comando: {e}")
             sys.exit(-1)
 
+        if restart:
+            self.restart()
+
     def restart(self):
         """
         Restart application with same args as it was started.
         Does **not** return
         """
-        if self.verbose:
-            print(f"Restarting {sys.executable} {sys.argv} ...")
+        print(f"Restarting {sys.executable} {sys.argv} ...")
         os.execl(sys.executable, *([sys.executable] + sys.argv))
 
     def _is_user_installed(self):
