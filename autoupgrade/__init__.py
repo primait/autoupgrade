@@ -99,7 +99,7 @@ class Package(object):
     def _get_installed_version(self):
         try:
             output = subprocess.run(
-                ["pip", "show", self.pkg], check=True, stdout=subprocess.PIPE
+                ["pip3", "show", self.pkg], check=True, stdout=subprocess.PIPE
             ).stdout.decode("utf-8")
 
             return re.search(self.regex, output).group(1)
