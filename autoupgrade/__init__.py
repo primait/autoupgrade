@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
+import semver
 import site
 import sys
 import subprocess
@@ -14,7 +16,7 @@ class Package(object):
     AutoUpgrade class, holds one package.
     """
 
-    __slots__ = ["pkg", "verbose"]
+    __slots__ = ["pkg", "verbose", "regex", "version_before"]
 
     def __init__(self, pkg, verbose=False):  # index=None,
         """
@@ -23,8 +25,10 @@ class Package(object):
         """
         self.pkg = pkg
         self.verbose = verbose
+        self.regex = r"Version\: ([0-9\.]+)"
+        self.version_before = self._get_installed_version()
 
-    def upgrade(self, dependencies=True, prerelease=False, force=False, restart=True):
+    def upgrade(self, dependencies=True, prerelease=False, force=False):
         """
         Upgrade the package unconditionaly
         Args:
@@ -33,6 +37,8 @@ class Package(object):
             force: reinstall all packages even if they are already up-to-date
         Returns True if pip was sucessful
         """
+        restart = False
+
         pip_args = ["pip3", "install", self.pkg, "--upgrade"]
 
         if not self.verbose:
@@ -56,6 +62,11 @@ class Package(object):
 
         try:
             subprocess.run(pip_args, check=True)
+            version_after = self._get_installed_version()
+
+            if semver.compare(version_after, self.version_before) == 1:
+                restart = True
+
         except (CalledProcessError) as e:
             print(f"Errore eseguendo il comando: {e}")
             sys.exit(-1)
@@ -84,3 +95,14 @@ class Package(object):
             # Some versions of virtualenv ship with their own version of the
             # site module without the getusersitepacakges function.
             return False
+
+    def _get_installed_version(self):
+        try:
+            output = subprocess.run(
+                ["pip", "show", self.pkg], check=True, stdout=subprocess.PIPE
+            ).stdout.decode("utf-8")
+
+            return re.search(self.regex, output).group(1)
+        except (CalledProcessError) as e:
+            print(f"Errore eseguendo il comando: {e}")
+            sys.exit(-1)
