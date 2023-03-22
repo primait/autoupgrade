@@ -39,7 +39,7 @@ class Package(object):
         """
         restart = False
 
-        pip_args = ["pip3", "install", self.pkg, "--upgrade"]
+        pip_args = [self._find_pip(), "install", self.pkg, "--upgrade"]
 
         if not self.verbose:
             pip_args.append("--quiet")
@@ -99,10 +99,15 @@ class Package(object):
     def _get_installed_version(self):
         try:
             output = subprocess.run(
-                ["pip3", "show", self.pkg], check=True, stdout=subprocess.PIPE
+                [self._find_pip(), "show", self.pkg], check=True, stdout=subprocess.PIPE
             ).stdout.decode("utf-8")
 
             return re.search(self.regex, output).group(1)
         except (CalledProcessError) as e:
             print(f"Errore eseguendo il comando: {e}")
             sys.exit(-1)
+
+    def _find_pip(self):
+        if sys.base_prefix != sys.prefix: # running from venv
+            return sys.prefix+"/bin/pip3"
+        return "pip3"
