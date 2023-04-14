@@ -60,16 +60,11 @@ class Package(object):
         if proxy:
             pip_args.extend(["--proxy", proxy])
 
-        try:
-            subprocess.run(pip_args, check=True)
-            version_after = self._get_installed_version()
+        subprocess.run(pip_args, check=True)
+        version_after = self._get_installed_version()
 
-            if semver.compare(version_after, self.version_before) == 1:
-                restart = True
-
-        except (CalledProcessError) as e:
-            print(f"Errore eseguendo il comando: {e}")
-            sys.exit(-1)
+        if semver.compare(version_after, self.version_before) == 1:
+            restart = True
 
         if restart:
             self.restart()
@@ -97,17 +92,13 @@ class Package(object):
             return False
 
     def _get_installed_version(self):
-        try:
-            output = subprocess.run(
-                [self._find_pip(), "show", self.pkg], check=True, stdout=subprocess.PIPE
-            ).stdout.decode("utf-8")
+        output = subprocess.run(
+            [self._find_pip(), "show", self.pkg], check=True, stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
 
-            return re.search(self.regex, output).group(1)
-        except (CalledProcessError) as e:
-            print(f"Errore eseguendo il comando: {e}")
-            sys.exit(-1)
+        return re.search(self.regex, output).group(1)
 
     def _find_pip(self):
-        if sys.base_prefix != sys.prefix: # running from venv
-            return sys.prefix+"/bin/pip3"
+        if sys.base_prefix != sys.prefix:  # running from venv
+            return sys.prefix + "/bin/pip3"
         return "pip3"
