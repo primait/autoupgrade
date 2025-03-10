@@ -1,0 +1,15 @@
+name: CI
+
+on: push
+
+concurrency:
+  group: CI-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  alls-green:
+    if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name)
+    runs-on: k8s-small
+    needs:
+    steps:
+      - run: ${{ !contains(needs.*.result, 'failure') }}
