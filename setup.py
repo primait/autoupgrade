@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name="autoupgrade-prima",
-    version="0.6.5",
+    version="0.6.6",
     author="Walter Purcaro",
     author_email="vuolter@gmail.com",
     description="Automatic upgrade of PyPI packages",
@@ -14,7 +14,7 @@ setup(
     include_package_data=True,
     url="https://github.com/primait/autoupgrade",
     download_url="https://github.com/primait/autoupgrade/releases",
-    install_requires=["semver"],
+    install_requires=["semver", "setuptools"],
     obsoletes=["autoupgrade"],
     license="MIT License",
     zip_safe=True,
