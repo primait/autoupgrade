@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "autoupgrade"
+  description: "Automatic upgrade of PyPI packages"
+spec:
+  type: "library"
+  lifecycle: production
+  owner: "group:default/team-developer-experience"
+  system: prima.it
